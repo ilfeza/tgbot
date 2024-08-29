@@ -11,19 +11,20 @@ router = Router()
 @router.message(CommandStart())
 async def cmd_start(message: Message):
     await rq.set_user(message.from_user.id)
-    keyboard = await kb.original()
-    await message.answer("PRIV", reply_markup=keyboard)
+
+    await message.answer('Привет! Это бот для запоминания иностранных слов. Нажми /select ' +
+                         ', чтобы выбрать язык и начать учить слова.')
 
 
 @router.message(Command('help'))
 async def cmd_help(message: Message):
     await message.answer('this is /help')
 
+@router.message(Command('help'))
+async def cmd_help(message: Message):
+    await message.answer('Github - ')
 
-@router.message(F.text == 'How')
-async def cmd_how(message: Message):
-    await message.answer('ok')
-
+# выбор transl языка
 @router.message(Command('select'))
 async def cmd_start(message: Message):
     keyboard = await kb.translate()

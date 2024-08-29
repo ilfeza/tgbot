@@ -11,7 +11,7 @@ from app.services import lang, get_translations
 
 router = Router()
 
-
+# выбор orig языка
 @router.callback_query(F.data.startswith('translate_'))
 async def select_translate(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Learning.translation)
@@ -22,6 +22,10 @@ async def select_translate(callback: CallbackQuery, state: FSMContext):
     keyboard = await kb.original()
     await callback.message.edit_text('Выберите язык, который вы знаете', reply_markup=keyboard)
 
+
+# вывод dif языка
+
+# вывод выбора
 @router.callback_query(F.data.startswith('original_'))
 async def select_original(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Learning.original)

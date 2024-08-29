@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, String
+from sqlalchemy import BigInteger, String, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 
@@ -21,10 +21,10 @@ class User(Base):
 class Word(Base):
     __tablename__ = 'words'
     id: Mapped[int] = mapped_column(primary_key=True)
-
     english: Mapped[str] = mapped_column(String(50))
     russian: Mapped[str] = mapped_column(String(50))
     korean: Mapped[str] = mapped_column(String(50))
+    difficulty: Mapped[int] = mapped_column(Integer, default=1)
 
 
 async def async_main():

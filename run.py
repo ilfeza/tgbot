@@ -4,8 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN
-from app import handlers
-from app.handler import other_handlers
+from app.handler import other_handlers, handlers
 from app.database.models import async_main
 
 bot = Bot(token=TOKEN)
