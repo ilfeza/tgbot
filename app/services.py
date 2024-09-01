@@ -1,14 +1,14 @@
 import random
 from app.database.requests import *
 
+lang = {'russian': 'Русский',
+        'english': 'Английский',
+        'korean': 'Корейский'}
 
-lang = {'russian' : 'Русский',
-        'english' : 'Английский',
-        'korean' : 'Корейский'}
 
-async def get_translations(orig, transl):
-    orig_value, transl_value = await get_orig_transl(orig, transl)
-    translation = await get_random_values(transl)
+async def get_translations(orig, transl, diff):
+    orig_value, transl_value = await get_orig_transl(orig, transl, diff)
+    translation = await get_random_values(transl, diff)
 
     translation.append(transl_value)
 
