@@ -5,6 +5,7 @@ from aiogram.types import CallbackQuery
 
 import app.keyboards as kb
 import app.database.requests as rq
+from app.database.requests import addUserPoints
 from app.states import Learning
 from aiogram.fsm.context import FSMContext
 from app.services import lang, get_translations
@@ -42,8 +43,10 @@ async def translate(message: Message, state: FSMContext):
         points = user_state.get("in_tournament") + 1
         await state.update_data(in_tournament=points)
         print(user_state)
+
         await message.answer('Все верно')
     else:
+        await addUserPoints(message.from_user.id, message.from_user.full_name, user_state.get("in_tournament"))
         await state.update_data(in_tournament=0)
         await message.answer('Не верно, правильно ' + str(user_state.get("transl_lang")))
 

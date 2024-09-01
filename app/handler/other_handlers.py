@@ -76,10 +76,11 @@ async def select_original(callback: CallbackQuery, state: FSMContext):
 async def translate(message: Message, state: FSMContext):
     user_state = await state.get_data()
 
-    if message.text == user_state.get("transl_lang"):
-        await message.answer('Все верно')
-    else:
-        await message.answer('Не верно, правильно ' + str(user_state.get("transl_lang")))
+    if message.text:
+        if message.text == user_state.get("transl_lang"):
+            await message.answer('Все верно')
+        else:
+            await message.answer('Не верно, правильно ' + str(user_state.get("transl_lang")))
 
     orig_value, transl_value, translation = await get_translations(user_state.get("original"),
                                                                    user_state.get("translation"),

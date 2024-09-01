@@ -1,6 +1,6 @@
 from app.database.models import async_session
-from app.database.models import User, Word
-from sqlalchemy import select, func
+from app.database.models import User, Word, Leaderboard
+from sqlalchemy import select, func, update
 
 
 async def set_user(tg_id):
@@ -48,3 +48,24 @@ async def get_random_values(transl, diff):
         values = result.scalars().all()
 
         return values
+
+
+async def addUserPoints(tg_id: int, name: str, points: int):
+    async with async_session() as session:
+        result = await session.execute(
+            select(Leaderboard).where(Leaderboard.tg_id == tg_id)
+        )
+        user = result.scalar_one_or_none()
+
+        if user:
+            if points > user.point:
+                await session.execute(
+                    update(Leaderboard)
+                    .where(Leaderboard.tg_id == tg_id)
+                    .values(point=points, name=name)
+                )
+        else:
+            new_user = Leaderboard(tg_id=tg_id, name=name, point=points)
+            session.add(new_user)
+
+        await session.commit()

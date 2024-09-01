@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, String, Integer
+from sqlalchemy import BigInteger, String, Integer, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 
@@ -25,6 +25,14 @@ class Word(Base):
     russian: Mapped[str] = mapped_column(String(50))
     korean: Mapped[str] = mapped_column(String(50))
     difficulty: Mapped[int] = mapped_column(Integer, default=1)
+
+class Leaderboard(Base):
+    __tablename__ = 'leaderboards'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tg_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.tg_id'))
+    name: Mapped[str] = mapped_column(String(50))
+    point: Mapped[int] = mapped_column(Integer, default=0)
 
 
 async def async_main():
