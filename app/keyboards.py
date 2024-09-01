@@ -78,3 +78,11 @@ async def difficulty() -> InlineKeyboardMarkup:
     )
 
     return keyboard.adjust(3).as_markup()
+
+async def agree():
+    keyboard = InlineKeyboardBuilder()
+    keyboard.add(
+        InlineKeyboardButton(text='Я согласен', callback_data='agree_')
+    )
+
+    return keyboard.adjust(1).as_markup()

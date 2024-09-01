@@ -11,4 +11,6 @@ class Learning(StatesGroup):
 
     in_study = State()
 
+    in_tournament = State()
+
 

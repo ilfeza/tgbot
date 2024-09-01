@@ -14,9 +14,16 @@ async def set_user(tg_id):
 
 async def get_orig_transl(orig, transl, diff):
     async with async_session() as session:
-        result = await session.execute(
-            select(Word).where(Word.difficulty == diff).order_by(func.random()).limit(1)
-        )
+
+        if diff == 0:
+            result = await session.execute(
+                select(Word).order_by(func.random()).limit(1)
+            )
+        else:
+            result = await session.execute(
+                select(Word).where(Word.difficulty == diff).order_by(func.random()).limit(1)
+            )
+
         word_instance = result.scalar_one()
 
         orig_value = getattr(word_instance, orig)
@@ -29,9 +36,14 @@ async def get_random_values(transl, diff):
     async with async_session() as session:
         column = getattr(Word, transl)
 
-        result = await session.execute(
-            select(column).where(Word.difficulty == diff).order_by(func.random()).limit(3)
-        )
+        if diff == 0:
+            result = await session.execute(
+                select(column).order_by(func.random()).limit(3)
+            )
+        else:
+            result = await session.execute(
+                select(column).where(Word.difficulty == diff).order_by(func.random()).limit(3)
+            )
 
         values = result.scalars().all()
 

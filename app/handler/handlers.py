@@ -15,17 +15,26 @@ async def cmd_start(message: Message):
     await message.answer('Привет! Это бот для запоминания иностранных слов. Нажми /select ' +
                          ', чтобы выбрать язык и начать учить слова.')
 
-
-@router.message(Command('help'))
-async def cmd_help(message: Message):
-    await message.answer('this is /help')
-
 @router.message(Command('help'))
 async def cmd_help(message: Message):
     await message.answer('Github - ')
 
-# выбор transl языка
 @router.message(Command('select'))
 async def cmd_start(message: Message):
     keyboard = await kb.translate()
     await message.answer('Выберите язык, который вы будете изучать', reply_markup=keyboard)
+
+@router.message(Command('learn'))
+async def cmd_start(message: Message):
+    # keyboard = await kb.translate()
+    await message.answer('LEARN')
+
+@router.message(Command('tournament'))
+async def cmd_start(message: Message):
+
+    await message.answer('TOURNAMENT')
+
+@router.message(Command('leaderboard'))
+async def cmd_start(message: Message):
+    keyboard = await kb.agree()
+    await message.answer('LEADERBOARD', reply_markup=keyboard)
