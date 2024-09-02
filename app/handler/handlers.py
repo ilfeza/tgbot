@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
 import app.keyboards as kb
-import app.database.requests as rq
+from app.database.requests import get_leaderboard
 
 router = Router()
 
@@ -29,12 +29,20 @@ async def cmd_start(message: Message):
     # keyboard = await kb.translate()
     await message.answer('LEARN')
 
-@router.message(Command('tournament'))
-async def cmd_start(message: Message):
-
-    await message.answer('TOURNAMENT')
 
 @router.message(Command('leaderboard'))
+async def cmd_leaderboard(message: Message):
+    top_10 = await get_leaderboard()
+    max_name_length = max(len(name) for name in top_10.keys())
+
+    leaderboard_message = "Топ 10 пользователей:\n"
+    for index, (name, points) in enumerate(top_10.items(), start=1):
+        leaderboard_message += f"{index:<3} {name:<{max_name_length+3}} {points}\n"
+
+    await message.answer(leaderboard_message)
+
+
+@router.message(Command('tournaments'))
 async def cmd_start(message: Message):
     keyboard = await kb.agree()
-    await message.answer('LEADERBOARD', reply_markup=keyboard)
+    await message.answer('TOURNAMENTS', reply_markup=keyboard)
