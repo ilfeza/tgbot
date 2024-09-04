@@ -1,21 +1,19 @@
 from app.database.models import async_session
-from app.database.models import User, Word, Leaderboard
-from sqlalchemy import select, func, update
-
+from app.database.crud import *
 
 async def set_user(tg_id):
     async with async_session() as session:
-        user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        user = await session.scalar(select_tgid_user(tg_id))
 
         if not user:
-            session.add(User(tg_id=tg_id))
+            session.add(create_user(tg_id))
             await session.commit()
 
 
 async def get_leaderboard() -> dict:
     async with async_session() as session:
-        query = select(Leaderboard).order_by(Leaderboard.point.desc()).limit(10)
-        result = await session.execute(query)
+        # query = select(Leaderboard).order_by(Leaderboard.point.desc()).limit(10)
+        result = await session.execute(select_leaderboard())
         top_10 = result.scalars().all()
 
         top_10_dict = {entry.name: entry.point for entry in top_10}
@@ -26,11 +24,11 @@ async def get_orig_transl(orig, transl, diff):
 
         if diff == 0:
             result = await session.execute(
-                select(Word).order_by(func.random()).limit(1)
+                select_word()
             )
         else:
             result = await session.execute(
-                select(Word).where(Word.difficulty == diff).order_by(func.random()).limit(1)
+                select_word_diff(diff)
             )
 
         word_instance = result.scalar_one()
@@ -47,11 +45,11 @@ async def get_random_values(transl, diff):
 
         if diff == 0:
             result = await session.execute(
-                select(column).order_by(func.random()).limit(3)
+                select_3word(column)
             )
         else:
             result = await session.execute(
-                select(column).where(Word.difficulty == diff).order_by(func.random()).limit(3)
+                select_3word_diff(column)
             )
 
         values = result.scalars().all()
@@ -59,22 +57,17 @@ async def get_random_values(transl, diff):
         return values
 
 
-async def addUserPoints(tg_id: int, name: str, points: int):
+async def add_user_points(tg_id: int, name: str, points: int):
     async with async_session() as session:
         result = await session.execute(
-            select(Leaderboard).where(Leaderboard.tg_id == tg_id)
+            check_user_leaderboard(tg_id)
         )
         user = result.scalar_one_or_none()
 
         if user:
             if points > user.point:
-                await session.execute(
-                    update(Leaderboard)
-                    .where(Leaderboard.tg_id == tg_id)
-                    .values(point=points, name=name)
-                )
+                await session.execute(update_user_points(tg_id, points, name))
         else:
-            new_user = Leaderboard(tg_id=tg_id, name=name, point=points)
-            session.add(new_user)
+            session.add(create_leaderboard(tg_id, points, name))
 
         await session.commit()

@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 import app.keyboards as kb
 from app.database.requests import get_leaderboard
+import app.database.requests as rq
 
 router = Router()
 
@@ -15,14 +16,25 @@ async def cmd_start(message: Message):
     await message.answer('Привет! Это бот для запоминания иностранных слов. Нажми /select ' +
                          ', чтобы выбрать язык и начать учить слова.')
 
+
+@router.message(lambda message: message.text == 'a')
+async def handle_message_with_a(message: Message):
+    await rq.set_user(message.from_user.id)
+    await message.answer(
+        'Привет! Это бот для запоминания иностранных слов. Нажми /select, чтобы выбрать язык и начать учить слова.'
+    )
+
+
 @router.message(Command('help'))
 async def cmd_help(message: Message):
     await message.answer('Github - ')
+
 
 @router.message(Command('select'))
 async def cmd_start(message: Message):
     keyboard = await kb.translate()
     await message.answer('Выберите язык, который вы будете изучать', reply_markup=keyboard)
+
 
 @router.message(Command('learn'))
 async def cmd_start(message: Message):
@@ -37,7 +49,7 @@ async def cmd_leaderboard(message: Message):
 
     leaderboard_message = "Топ 10 пользователей:\n"
     for index, (name, points) in enumerate(top_10.items(), start=1):
-        leaderboard_message += f"{index:<3} {name:<{max_name_length+3}} {points}\n"
+        leaderboard_message += f"{index:<3} {name:<{max_name_length + 3}} {points}\n"
 
     await message.answer(leaderboard_message)
 

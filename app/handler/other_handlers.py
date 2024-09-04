@@ -3,7 +3,7 @@ from aiogram.fsm import state
 from aiogram.types import Message, CallbackQuery
 
 import app.keyboards as kb
-import app.database.requests as rq
+
 from app.states import Learning
 from aiogram.fsm.context import FSMContext
 from app.services import lang, get_translations, update_state_learning
